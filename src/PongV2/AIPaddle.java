@@ -5,9 +5,9 @@ import java.awt.Graphics;
 
 public class AIPaddle implements Paddle {
 	
-	double y, yVel;
+	double y,x, yVel;
 	boolean upAccel, downAccel;
-	int player, x;//indican si es el jugador de la izquierda o derecha y la posicion
+	int player;//indican si es el jugador de la izquierda o derecha y la posicion
 	final double GRAVITY = 0.94;
 	Ball b1;
 	
@@ -22,7 +22,7 @@ public class AIPaddle implements Paddle {
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.white);
-		g.fillRect(x,  (int)y, 20, 80);
+		g.fillRect((int)x,  (int)y, 20, 80);
 		
 	}
 
@@ -36,9 +36,14 @@ public class AIPaddle implements Paddle {
 	}
 
 	@Override
-	public int getY() {
+	public double getY() {
 		// TODO Auto-generated method stub
-		return (int) y;
+		return y;
+	}
+	
+	public double getX() {
+		// TODO Auto-generated method stub
+		return x;
 	}
 
 }

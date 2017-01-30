@@ -5,43 +5,80 @@ import java.awt.Graphics;
 
 public class HumanPaddle implements Paddle {
 	
-	double y, yVel;
+	double y,x, yVel, xVel;
 	boolean upAccel, downAccel;
-	int player, x;//indican si es el jugador de la izquierda o derecha y la posicion
+	int player;//indican si es el jugador de la izquierda o derecha y la posicion
 	final double GRAVITY = 0.94;
+	int _wide = 20, _long = 80;
 	
 	public HumanPaddle(int player){
+		this.player = player;
 		upAccel = false; downAccel = false;
-		y = 210; yVel = 0;
-		if(player == 1) x = 20;//el jugador 1 es el de la izquierda
-		else x = 660; //el jugador 2 es el de la derecha
+		yVel = 0;
+		xVel = 0;
+		if(player == 1){
+			x = 20;//el jugador 1 es el de la izquierda
+			y = Tennis.HEIGHT/2 - _long/2;
+		}else if (player == 2){
+			x = Tennis.WIDTH - 20 - _wide ; //el jugador 2 es el de la derecha
+			y = Tennis.HEIGHT/2 - _long/2;
+		}else if (player == 3){
+			x = Tennis.WIDTH/2 - _long/2;
+			y = 20;
+		}else{
+			x = Tennis.WIDTH/2 - _long/2;
+			y = Tennis.HEIGHT - 20 - _wide;  
+		}
 	}
 	
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.white);
-		g.fillRect(x,  (int)y, 20, 80);
+		if(player == 1 || player == 2){
+			g.fillRect((int)x, (int)y, _wide, _long);
+		}else{
+			g.fillRect((int)x, (int)y, _long, _wide);
+		}
+		
 		
 	}
 
 	@Override
 	public void move() {
-		if(upAccel){
-			yVel -= 2;
-		}else if (downAccel){
-			yVel += 2;
-		}else if (!upAccel && !downAccel){
-			yVel *= GRAVITY;
-		}
-		
-		if (yVel >= 5) yVel = 5;
-		else if (yVel <= -5) yVel = -5;
-		
-		y += yVel;
-		
-		if (y < 0) y = 0;
-		if (y > 420) y = 420;
-		
+		if(player == 1 || player == 2){
+			if(upAccel){
+				yVel -= 2;
+			}else if (downAccel){
+				yVel += 2;
+			}else if (!upAccel && !downAccel){
+				yVel *= GRAVITY;
+			}
+			
+			if (yVel >= 5) yVel = 5;
+			else if (yVel <= -5) yVel = -5;
+			
+			y += yVel;
+
+			if (y < 40) y = 40;
+			if (y > Tennis.HEIGHT - _long -40) y = Tennis.HEIGHT - _long - 40;
+		}else{
+			if(upAccel){
+				xVel -= 2;
+			}else if (downAccel){
+				xVel += 2;
+			}else if (!upAccel && !downAccel){
+				xVel *= GRAVITY;
+			}
+			
+			if (xVel >= 5) xVel = 5;
+			else if (xVel <= -5) xVel = -5;
+			
+			x += xVel;
+			
+			
+			if (x < 40) x = 40;
+			if (x > Tennis.WIDTH - _long - 40) x = Tennis.WIDTH - _long -40;
+		}		
 	}
 	
 	public void setUpAccel( boolean input){
@@ -53,9 +90,29 @@ public class HumanPaddle implements Paddle {
 	}
 
 	@Override
-	public int getY() {
+	public double getY() {
 		// TODO Auto-generated method stub
-		return (int) y;
+		return  y;
+	}
+	
+	public double getX() {
+		// TODO Auto-generated method stub
+		return x;
+	}
+	
+	
+	public int getWide() {
+		// TODO Auto-generated method stub
+		return  _wide;
+	}
+	
+	public int getLong() {
+		// TODO Auto-generated method stub
+		return _long;
+	}
+	
+	public int getPlayer(){
+		return player;
 	}
 
 }
