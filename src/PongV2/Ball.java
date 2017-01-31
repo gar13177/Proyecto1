@@ -34,24 +34,28 @@ public class Ball implements Runnable {
 				if (p1.getPlayer() == 1){
 					if (x <= p1.getX()+p1.getWide() && x >= p1.getX() + p1.getWide()*0.6)
 						if (y >= p1.getY() && y <= p1.getY()+p1.getLong()){
+							x = p1.getX()+p1.getWide();
 							xVel = - xVel;
 							yVel = getRandomSpeed()*getRandomDirection();
 						}
 				}else if (p1.getPlayer() == 2){
 					if (x >= p1.getX() && x <= p1.getX() + p1.getWide()*0.3)
 						if (y >= p1.getY() && y <= p1.getY()+p1.getLong()){
+							x = p1.getX();
 							xVel = - xVel;
 							yVel = getRandomSpeed()*getRandomDirection();
 						}
 				}else if (p1.getPlayer() == 3){
 					if (y <= p1.getY() + p1.getWide() && y >= p1.getY()+p1.getWide()*0.6)
 						if (x >= p1.getX() && x <= p1.getX() + p1.getLong()){
+							y = p1.getY() + p1.getWide();
 							yVel = - yVel;
 							xVel = getRandomSpeed()*getRandomDirection();
 						}
 				}else{
 					if (y >= p1.getY() && y <= p1.getY()+p1.getWide()*0.3)
 						if (x >= p1.getX() && x <= p1.getX() + p1.getLong()){
+							y = p1.getY();
 							yVel = - yVel;
 							xVel = getRandomSpeed()*getRandomDirection();
 						}
