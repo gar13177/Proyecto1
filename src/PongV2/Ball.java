@@ -3,10 +3,14 @@ package PongV2;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Ball {
+public class Ball implements Runnable {
 	double xVel, yVel, x, y;
+	Paddle[] p;
+	Tennis game;
 	
-	public Ball(){
+	public Ball(Paddle[] p, Tennis game){
+		this.game = game;
+		this.p = p;
 		x = Tennis.WIDTH/2;
 		y = Tennis.HEIGHT/2;
 		xVel =  getRandomSpeed() * getRandomDirection();
@@ -14,7 +18,7 @@ public class Ball {
 	}
 	
 	public double getRandomSpeed(){
-		return (Math.random()*2+1);
+		return (Math.random()*3+2);
 	}
 	
 	public int getRandomDirection(){
@@ -23,7 +27,7 @@ public class Ball {
 		return -1;
 	}
 	
-	public void checkPaddleCollision(Paddle[] p){
+	public void checkPaddleCollision(){
 		for (int i = 0; i < p.length; i++){
 			if (p[i] instanceof HumanPaddle){
 				HumanPaddle p1 = (HumanPaddle) p[i];
@@ -59,7 +63,10 @@ public class Ball {
 	public void move(){
 		x += xVel;
 		y += yVel;
-		
+		if (y < 0 || y > Tennis.HEIGHT) yVel = -yVel;//rebote
+		if (x < 0 || x > Tennis.WIDTH) xVel = -xVel;//rebote
+		checkPaddleCollision();
+		game.updatePlayer(this);
 		//if (y < 10) yVel = -yVel;//rebote
 		//if (y > 490) yVel = -yVel;
 	}
@@ -69,11 +76,25 @@ public class Ball {
 		g.fillOval((int)x-10 , (int) y-10, 20, 20);
 	}
 	
-	public int getX(){
+	public synchronized int getX(){
 		return (int) x;
 	}
 	
-	public int getY(){
+	public synchronized int getY(){
 		return (int) y;
+	}
+
+	@Override
+	public void run() {
+		while (true){
+			move();	
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }
