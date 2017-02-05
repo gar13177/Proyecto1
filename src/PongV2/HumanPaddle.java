@@ -5,16 +5,16 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class HumanPaddle implements Paddle, Runnable {
+public class HumanPaddle implements Paddle, Runnable, KeyListener {
 	
-	double y,x, yVel, xVel;
+	double y,x, yVel, xVel, MAXVEL = 10;
 	boolean upAccel, downAccel;
 	int player;//indican si es el jugador de la izquierda o derecha y la posicion
 	final double GRAVITY = 0.94;
 	int _wide = 20, _long = 80;
-	Tennis game;
+	Game game;
 	
-	public HumanPaddle(int player, Tennis game){
+	public HumanPaddle(int player, Game game){
 		this.game = game;
 		this.player = player;
 		upAccel = false; downAccel = false;
@@ -33,6 +33,20 @@ public class HumanPaddle implements Paddle, Runnable {
 			x = Tennis.WIDTH/2 - _long/2;
 			y = Tennis.HEIGHT - 20 - _wide;  
 		}
+		
+		double[] temp = new double[4];
+		if(player == 1 || player == 2){
+			temp[0] = x;
+			temp[1] = y;
+			temp[2] = _wide;
+			temp[3] = _long;
+		}else{
+			temp[0] = x;
+			temp[1] = y;
+			temp[2] = _long;
+			temp[3] = _wide;
+		}
+		game.updatePos(player, temp);		
 	}
 	
 	@Override
@@ -57,14 +71,28 @@ public class HumanPaddle implements Paddle, Runnable {
 				if (Math.abs(yVel) < 0.1) yVel = 0;  
 			}
 			
-			if (yVel >= 5) yVel = 5;
-			else if (yVel <= -5) yVel = -5;
+			if (yVel >= MAXVEL) yVel = MAXVEL;
+			else if (yVel <= -MAXVEL) yVel = -MAXVEL;
 			
 			y += yVel;
 
 			if (y < 40) y = 40;
 			if (y > Tennis.HEIGHT - _long -40) y = Tennis.HEIGHT - _long - 40;
-			if (yVel != 0) game.updatePlayer(this);
+			if (yVel != 0){
+				double[] temp = new double[4];
+				if(player == 1 || player == 2){
+					temp[0] = x;
+					temp[1] = y;
+					temp[2] = _wide;
+					temp[3] = _long;
+				}else{
+					temp[0] = x;
+					temp[1] = y;
+					temp[2] = _long;
+					temp[3] = _wide;
+				}
+				game.updatePos(player, temp);
+			}
 			
 		}else{
 			if(upAccel){
@@ -75,15 +103,29 @@ public class HumanPaddle implements Paddle, Runnable {
 				xVel *= GRAVITY;
 			}
 			
-			if (xVel >= 5) xVel = 5;
-			else if (xVel <= -5) xVel = -5;
+			if (xVel >= MAXVEL) xVel = MAXVEL;
+			else if (xVel <= -MAXVEL) xVel = -MAXVEL;
 			
 			x += xVel;
 			
 			
 			if (x < 40) x = 40;
 			if (x > Tennis.WIDTH - _long - 40) x = Tennis.WIDTH - _long -40;
-			if (xVel != 0) game.updatePlayer(this);
+			if (xVel != 0){
+				double[] temp = new double[4];
+				if(player == 1 || player == 2){
+					temp[0] = x;
+					temp[1] = y;
+					temp[2] = _wide;
+					temp[3] = _long;
+				}else{
+					temp[0] = x;
+					temp[1] = y;
+					temp[2] = _long;
+					temp[3] = _wide;
+				}
+				game.updatePos(player, temp);
+			}
 		}		
 	}
 	

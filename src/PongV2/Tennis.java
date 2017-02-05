@@ -2,55 +2,56 @@ package PongV2;
 
 import java.applet.Applet;
 import java.awt.Color;
-
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
-public class Tennis extends Applet implements KeyListener{
+import javax.swing.JApplet;
+import javax.swing.JPanel;
+
+public class Tennis extends JPanel implements Runnable, KeyListener{
 	public static int WIDTH = 600, HEIGHT = 600;
 	Thread thread;
-	HumanPaddle[] paddle = new HumanPaddle[4];
+	HumanPaddle[] paddle = new HumanPaddle[1];
 	HumanPaddle p1,p2,p3,p4;
 	//AIPaddle p2;
 	Ball b1;
 	boolean gameStarted;
 	Graphics gfx;
 	Image img;
+	Game game;
 	
+	public Tennis(){
+		init();
+	}
 	
 	public void init(){
-		this.resize(WIDTH,HEIGHT);
+		game = new Game();
+		this.addKeyListener(this);
+		
+		p1 = new HumanPaddle(1,game);
+		paddle[0] = p1;
+		
+		
+		b1 = new Ball(paddle, game);
+		new Thread(b1).start();
+		new Thread(p1).start();
+		
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		//this.setSize(WIDTH,HEIGHT);
 		gameStarted = false;
 		
-		
-		
-		
-		this.addKeyListener(this);
-		p1 = new HumanPaddle(1,this);
-		p2 = new HumanPaddle(2,this);
-		p3 = new HumanPaddle(3,this);
-		p4 = new HumanPaddle(4,this);//AIPaddle(2,b1);
-		paddle[0] = p1;
-		paddle[1] = p2;
-		paddle[2] = p3;
-		paddle[3] = p4;
-		
-		b1 = new Ball(paddle,this);
-		
-		img = createImage(WIDTH,HEIGHT);
+		img = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
 		gfx = img.getGraphics();
 		
-		new Thread(p1).start();
-		new Thread(p2).start();
-		new Thread(p3).start();
-		new Thread(p4).start();
-		
-		new Thread(b1).start();
-		
-		//thread = new Thread(this);
-		//thread.start();
+		new Thread(this).start();
+	}
+	
+	public void setGame(Game game){
+		this.game = game;
 	}
 	
 	public void restart(){
@@ -66,7 +67,7 @@ public class Tennis extends Applet implements KeyListener{
 		gameStarted = false;
 	}
 	
-	public synchronized void paint(Graphics g){
+	public void paint(Graphics g){
 		gfx.setColor(Color.black);
 		gfx.fillRect(0,0, WIDTH,HEIGHT);
 		
@@ -77,31 +78,33 @@ public class Tennis extends Applet implements KeyListener{
 			
 			
 		}else{
-			p1.draw(gfx);
-			p2.draw(gfx);
-			p3.draw(gfx);
-			p4.draw(gfx);
-			b1.draw(gfx);
+			gfx.setColor(Color.white);
+			double[] temp = game.getPos(0);
+			gfx.fillOval((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			
+			gfx.setColor(Color.white);
+			temp = game.getPos(1);
+			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			/*
+			temp = game.getPos(2);
+			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			
+			temp = game.getPos(3);
+			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			
+			temp = game.getPos(4);
+			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);*/
 		}
 		
-		if (!gameStarted){
+		/*if (!gameStarted){
 			gfx.setColor(Color.white);
 			gfx.drawString("Tennis",340, 100);
 			gfx.drawString("Press Enter to Begin" , 310, 130);
-		}
+		}*/
 		
 		g.drawImage(img, 0, 0, this);
 	}
 	
-	public synchronized void updatePlayer(Paddle p){
-		//p.draw(gfx);
-		repaint();
-	}
-	
-	public synchronized void updatePlayer(Ball b){
-		//p.draw(gfx);
-		repaint();
-	}
 	
 	public void update(Graphics g){
 		paint(g);
@@ -112,14 +115,6 @@ public class Tennis extends Applet implements KeyListener{
 		// TODO Auto-generated method stub
 		
 		for(;;){
-			/*if (gameStarted){
-				p1.move();
-				p2.move();
-				p3.move();
-				p4.move();
-				//b1.move();
-				b1.checkPaddleCollision(paddle);
-			}*/
 			repaint();
 			try {
 				Thread.sleep(10);
@@ -133,42 +128,11 @@ public class Tennis extends Applet implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		p1.keyPressed(e);
-		p2.keyPressed(e);
-		p3.keyPressed(e);
-		p4.keyPressed(e);
-		/*if(e.getKeyCode() == KeyEvent.VK_UP){
-			p1.setUpAccel(true);
-			p2.setUpAccel(true);
-			p3.setUpAccel(true);
-			p4.setUpAccel(true);
-		}else if (e.getKeyCode() == KeyEvent.VK_DOWN){
-			p1.setDownAccel(true);
-			p2.setDownAccel(true);
-			p3.setDownAccel(true);
-			p4.setDownAccel(true);
-		}else*/ if (e.getKeyCode() == KeyEvent.VK_ENTER){
-			gameStarted = true;
-		}
-		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		/*if(e.getKeyCode() == KeyEvent.VK_UP){
-			p1.setUpAccel(false);
-			p2.setUpAccel(false);
-			p3.setUpAccel(false);
-			p4.setUpAccel(false);
-		}else if (e.getKeyCode() == KeyEvent.VK_DOWN){
-			p1.setDownAccel(false);
-			p2.setDownAccel(false);
-			p3.setDownAccel(false);
-			p4.setDownAccel(false);
-		}*/
 		p1.keyReleased(e);
-		p2.keyReleased(e);
-		p3.keyReleased(e);
-		p4.keyReleased(e);
 	}
 
 	@Override

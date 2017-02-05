@@ -6,9 +6,9 @@ import java.awt.Graphics;
 public class Ball implements Runnable {
 	double xVel, yVel, x, y;
 	Paddle[] p;
-	Tennis game;
+	Game game;
 	
-	public Ball(Paddle[] p, Tennis game){
+	public Ball(Paddle[] p, Game game){
 		this.game = game;
 		this.p = p;
 		x = Tennis.WIDTH/2;
@@ -70,7 +70,12 @@ public class Ball implements Runnable {
 		if (y < 0 || y > Tennis.HEIGHT) yVel = -yVel;//rebote
 		if (x < 0 || x > Tennis.WIDTH) xVel = -xVel;//rebote
 		checkPaddleCollision();
-		game.updatePlayer(this);
+		double[] temp = new double[4];
+		temp[0] = x -10;
+		temp[1] = y - 10;
+		temp[2] = 20;
+		temp[3] = 20;
+		game.updatePos(0,temp);
 		//if (y < 10) yVel = -yVel;//rebote
 		//if (y > 490) yVel = -yVel;
 	}
