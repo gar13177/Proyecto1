@@ -5,12 +5,10 @@ import java.awt.Graphics;
 
 public class Ball implements Runnable {
 	double xVel, yVel, x, y;
-	Paddle[] p;
 	Game game;
 	
-	public Ball(Paddle[] p, Game game){
+	public Ball(Game game){
 		this.game = game;
-		this.p = p;
 		x = Tennis.WIDTH/2;
 		y = Tennis.HEIGHT/2;
 		xVel =  getRandomSpeed() * getRandomDirection();
@@ -28,34 +26,34 @@ public class Ball implements Runnable {
 	}
 	
 	public void checkPaddleCollision(){
-		for (int i = 0; i < p.length; i++){
-			if (p[i] instanceof HumanPaddle){
-				HumanPaddle p1 = (HumanPaddle) p[i];
-				if (p1.getPlayer() == 1){
-					if (x <= p1.getX()+p1.getWide() && x >= p1.getX() + p1.getWide()*0.6)
-						if (y >= p1.getY() && y <= p1.getY()+p1.getLong()){
-							x = p1.getX()+p1.getWide();
+		for (int i = 0; i < game.getNumPlayers(); i++){
+			double[] p1 = game.getPos(i+1);
+			if (p1 != null){
+				if (i == 0){
+					if (x <= p1[0]+p1[2] && x >= p1[0] + p1[2]*0.6)
+						if (y >= p1[1] && y <= p1[1]+p1[3]){
+							x = p1[0]+p1[2];
 							xVel = - xVel;
 							yVel = getRandomSpeed()*getRandomDirection();
 						}
-				}else if (p1.getPlayer() == 2){
-					if (x >= p1.getX() && x <= p1.getX() + p1.getWide()*0.3)
-						if (y >= p1.getY() && y <= p1.getY()+p1.getLong()){
-							x = p1.getX();
+				}else if (i == 1){
+					if (x >= p1[0] && x <= p1[0] + p1[2]*0.3)
+						if (y >= p1[1] && y <= p1[1]+p1[3]){
+							x = p1[0];
 							xVel = - xVel;
 							yVel = getRandomSpeed()*getRandomDirection();
 						}
-				}else if (p1.getPlayer() == 3){
-					if (y <= p1.getY() + p1.getWide() && y >= p1.getY()+p1.getWide()*0.6)
-						if (x >= p1.getX() && x <= p1.getX() + p1.getLong()){
-							y = p1.getY() + p1.getWide();
+				}else if (i == 2){
+					if (y <= p1[1] + p1[3] && y >= p1[1]+p1[3]*0.6)
+						if (x >= p1[0] && x <= p1[0] + p1[2]){
+							y = p1[1] + p1[3];
 							yVel = - yVel;
 							xVel = getRandomSpeed()*getRandomDirection();
 						}
 				}else{
-					if (y >= p1.getY() && y <= p1.getY()+p1.getWide()*0.3)
-						if (x >= p1.getX() && x <= p1.getX() + p1.getLong()){
-							y = p1.getY();
+					if (y >= p1[1] && y <= p1[1]+p1[3]*0.3)
+						if (x >= p1[0] && x <= p1[0] + p1[2]){
+							y = p1[1];
 							yVel = - yVel;
 							xVel = getRandomSpeed()*getRandomDirection();
 						}
@@ -75,7 +73,7 @@ public class Ball implements Runnable {
 		temp[1] = y - 10;
 		temp[2] = 20;
 		temp[3] = 20;
-		game.updatePos(0,temp);
+		game.updatePos(-1,temp);
 		//if (y < 10) yVel = -yVel;//rebote
 		//if (y > 490) yVel = -yVel;
 	}

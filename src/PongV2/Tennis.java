@@ -15,9 +15,7 @@ import javax.swing.JPanel;
 public class Tennis extends JPanel implements Runnable, KeyListener{
 	public static int WIDTH = 600, HEIGHT = 600;
 	Thread thread;
-	HumanPaddle[] paddle = new HumanPaddle[1];
-	HumanPaddle p1,p2,p3,p4;
-	//AIPaddle p2;
+	HumanPaddle p1;
 	Ball b1;
 	boolean gameStarted;
 	Graphics gfx;
@@ -32,11 +30,9 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 		game = new Game();
 		this.addKeyListener(this);
 		
-		p1 = new HumanPaddle(1,game);
-		paddle[0] = p1;
+		p1 = new HumanPaddle(2,game);
 		
-		
-		b1 = new Ball(paddle, game);
+		b1 = new Ball(game);
 		new Thread(b1).start();
 		new Thread(p1).start();
 		
@@ -79,11 +75,11 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 			
 		}else{
 			gfx.setColor(Color.white);
-			double[] temp = game.getPos(0);
+			double[] temp = game.getPos(-1);
 			gfx.fillOval((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
 			
 			gfx.setColor(Color.white);
-			temp = game.getPos(1);
+			temp = game.getPos(2);
 			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
 			/*
 			temp = game.getPos(2);
