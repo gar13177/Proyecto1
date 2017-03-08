@@ -8,9 +8,11 @@ public class mainClient {
 	String host;
 	int mainPort;
 	
-	public mainClient(String host, int mainPort){
-		this.host = host;
-		this.mainPort = mainPort;
+	public mainClient(){
+		
+		String host = "192.168.56.1";
+		int mainPort = 4093;
+
 		client1 c1 = new client1(host,mainPort,"kevin" );
 		
 		Thread t1 = new Thread(c1);

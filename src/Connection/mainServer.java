@@ -11,10 +11,11 @@ public class mainServer {
 	String broadcast;
 	int port;
 	
-	public mainServer(String broadcast, int port){
+	public mainServer(){
 		
-		this.broadcast = broadcast;
-		this.port = port;
+		//mainServer(broadcast, port)
+		String broadcast = "230.0.1.1";
+		int port = 4446;
 		
 		Game g = new Game();
 		int player = g.newPlayer();
@@ -24,6 +25,8 @@ public class mainServer {
 		int mainPort = s1.getPort();
 		System.out.println(s1.getPort());//ya tengo el puerto
 		System.out.println(s1.getIP());//ya tengo la ip
+		
+		
 		
 		s1.setBroadcast(broadcast);
 		s1.setPortB(port);
