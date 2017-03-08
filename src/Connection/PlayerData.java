@@ -1,16 +1,21 @@
+package Connection;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import PongV2.Game;
 
 public class PlayerData implements Runnable {
 	String host;
 	int port;
-	public PlayerData(String host, int port){
+	Game g;
+	
+	public PlayerData(String host, int port, Game g){
 		this.host = host;
 		this.port = port;
+		this.g = g;
 	}
 
 	@Override
@@ -20,15 +25,17 @@ public class PlayerData implements Runnable {
         DatagramSocket socket;
 		try {
 			socket = new DatagramSocket();
-			String s = "mensaje enviado por cliente ";
+			String s;
 	        InetAddress address = InetAddress.getByName(host);
-	        int cantidad = 0;
-	        while (cantidad < 300){
-	        	byte[] buf = (s+cantidad).getBytes();
-	        	DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
-		        socket.send(packet);
-		        cantidad ++;
-		        Thread.sleep(100);
+	        boolean continuar = true;
+	        while (continuar){
+	        	s = g.getPosString();
+	        	if (s != null){
+	        		byte[] buf = s.getBytes();
+	        		DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+			        socket.send(packet);
+	        	}
+		        Thread.sleep(8);
 	        }	   
 	        socket.close();
 			

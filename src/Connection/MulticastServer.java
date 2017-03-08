@@ -1,8 +1,10 @@
+package Connection;
 
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import PongV2.Game;
  
 public class MulticastServer implements Runnable {
  
@@ -11,10 +13,12 @@ public class MulticastServer implements Runnable {
     protected DatagramSocket socket = null;
     String hostname = "";
     int port;
+    Game g;
  
-    public MulticastServer(String hostname, int port) {
+    public MulticastServer(String hostname, int port, Game g) {
     	this.hostname = hostname;
     	this.port = port;
+    	this.g = g;
     	try {
 			this.socket = new DatagramSocket();
 		} catch (SocketException e) {
@@ -26,14 +30,14 @@ public class MulticastServer implements Runnable {
     public void run() {
     	if (socket == null) return;
     	
-		int cantidad = 0;
+		boolean continuar = true;
 		
-        while (cantidad < 500) {
+        while (continuar) {
             try {
                 byte[] buf = new byte[256];
  
                 // construct quote
-                String dString = "mensaje no."+cantidad;
+                String dString = g.getEverything();
                 buf = dString.getBytes();
  
                 // send it
@@ -41,8 +45,7 @@ public class MulticastServer implements Runnable {
                 InetAddress group = InetAddress.getByName(hostname);
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, group, port);
                 socket.send(packet);
-                cantidad ++;
-                Thread.sleep(1000);
+                Thread.sleep(8);//el doble de 60 frames
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }

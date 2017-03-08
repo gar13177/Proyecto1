@@ -1,3 +1,4 @@
+package Connection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,13 +8,14 @@ public class sendBroadcastInfo implements Runnable {
 	
 	int SIZE = 10000;
 	String broadcast = "";
-	int port = 0;
+	int port = 0, player = 0;
 	Socket client = null;
 	
-	public sendBroadcastInfo(Socket client, String broadcast, int port){
+	public sendBroadcastInfo(Socket client, String broadcast, int port, int player){
 		this.broadcast = broadcast;
 		this.port = port;
 		this.client = client;
+		this.player = player;
 	}
 
 	@Override
@@ -32,7 +34,7 @@ public class sendBroadcastInfo implements Runnable {
 			System.out.println(s);//se imprime requeste del jugador
 			
 			
-			msgArray = (broadcast+","+port).getBytes();
+			msgArray = (broadcast+","+port+","+player).getBytes();
 			output.writeInt(msgArray.length);
 			output.write(msgArray);
 			//output.flush();//envio de regreso el broadcast y el puerto

@@ -17,24 +17,51 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 	Thread thread;
 	HumanPaddle p1;
 	Ball b1;
-	boolean gameStarted;
+	boolean gameStarted, isMain = true;;
 	Graphics gfx;
 	Image img;
 	Game game;
+	int player = 1;
+	Thread t1 = null;//thread de la pelota
+	
 	
 	public Tennis(){
 		init();
 	}
 	
+	public Tennis (Game game){
+		this.game = game;
+		init();
+	}
+	
+	public Tennis (Game game, boolean isMain){
+		this.game = game;
+		this.isMain = isMain;
+		init();
+	}
+	
 	public void init(){
-		game = new Game();
+		if (game == null){
+			game = new Game();
+			game.setCurrentPlayer(game.newPlayer());
+			this.player = game.getCurrentPlayer();//jalo en cual estoy para saber
+			
+		}else{
+			this.player = game.getCurrentPlayer();
+		}
+		
 		this.addKeyListener(this);
 		
-		p1 = new HumanPaddle(2,game);
+		p1 = new HumanPaddle(this.player,game);
 		
-		b1 = new Ball(game);
-		new Thread(b1).start();
-		new Thread(p1).start();
+		if (this.isMain){//si es el principal, muevo la pelota
+			b1 = new Ball(game);
+			b1.setTime(System.currentTimeMillis()+5000);//espero 5 segundos
+			t1 = new Thread(b1);
+			t1.start();
+		}
+		Thread t2 = new Thread(p1);
+		t2.start();
 		
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		//this.setSize(WIDTH,HEIGHT);
@@ -51,15 +78,6 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 	}
 	
 	public void restart(){
-		/*p1 = new HumanPaddle(1);
-		p2 = new HumanPaddle(2);
-		p3 = new HumanPaddle(3);
-		p4 = new HumanPaddle(4);
-		paddle[0] = p1;
-		paddle[1] = p2;
-		paddle[2] = p3;
-		paddle[3] = p4;*/
-		//b1 = new Ball();
 		gameStarted = false;
 	}
 	
@@ -67,37 +85,62 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 		gfx.setColor(Color.black);
 		gfx.fillRect(0,0, WIDTH,HEIGHT);
 		
-		if(b1.getX() < -10 || b1.getX() > WIDTH+10 || b1.getY() < -10 || b1.getY() > HEIGHT+10){
-			gfx.setColor(Color.red);
-			gfx.drawString("Game Over", 350,250);
-			//restart();
+		if (b1 != null){
+			if(b1.getX() < -10 || b1.getX() > WIDTH+10 || b1.getY() < -10 || b1.getY() > HEIGHT+10){
+				gfx.setColor(Color.red);
+				gfx.drawString("Game Over", 350,250);
+				//restart();	
+			}
+		}
 			
-			
-		}else{
-			gfx.setColor(Color.white);
-			double[] temp = game.getPos(-1);
-			gfx.fillOval((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
-			
-			gfx.setColor(Color.white);
-			temp = game.getPos(2);
-			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
-			/*
-			temp = game.getPos(2);
-			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
-			
-			temp = game.getPos(3);
-			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
-			
-			temp = game.getPos(4);
-			gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);*/
+		gfx.setColor(Color.white);
+		double[] temp = game.getPos(-1);
+		gfx.fillOval((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+		
+		
+		temp = game.getPos(1);
+		if (temp != null){
+			if (temp.length >= 4){
+				if (this.player != 1 )
+					gfx.setColor(Color.white);
+				else 
+					gfx.setColor(Color.GREEN);
+				gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			}
 		}
 		
-		/*if (!gameStarted){
-			gfx.setColor(Color.white);
-			gfx.drawString("Tennis",340, 100);
-			gfx.drawString("Press Enter to Begin" , 310, 130);
-		}*/
+		temp = game.getPos(2);
+		if (temp != null){
+			if (temp.length >= 4){
+				if (this.player != 2 )
+					gfx.setColor(Color.white);
+				else 
+					gfx.setColor(Color.GREEN);
+				gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			}
+		}
 		
+		temp = game.getPos(3);
+		if (temp != null){
+			if (temp.length >= 4){
+				if (this.player != 3 )
+					gfx.setColor(Color.white);
+				else 
+					gfx.setColor(Color.GREEN);
+				gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			}
+		}
+		
+		temp = game.getPos(4);
+		if (temp != null){
+			if (temp.length >= 4){
+				if (this.player != 4 )
+					gfx.setColor(Color.white);
+				else 
+					gfx.setColor(Color.GREEN);
+				gfx.fillRect((int) temp[0],(int) temp[1],(int) temp[2],(int) temp[3]);
+			}
+		}
 		g.drawImage(img, 0, 0, this);
 	}
 	
@@ -113,7 +156,7 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 		for(;;){
 			repaint();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(16);//60 frames
 			} catch (InterruptedException e) {
 				
 				e.printStackTrace();

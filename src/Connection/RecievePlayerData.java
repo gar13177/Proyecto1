@@ -1,15 +1,19 @@
+package Connection;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import PongV2.Game;
 
 public class RecievePlayerData implements Runnable {
 	
 	int port;
 	DatagramSocket socket = null;
+	Game g;
 	
-	public RecievePlayerData(int port){
+	public RecievePlayerData(int port, Game g){
 		this.port = port;
+		this.g = g;
 		try {
 			socket = new DatagramSocket(port);
 		} catch (SocketException e) {
@@ -23,15 +27,27 @@ public class RecievePlayerData implements Runnable {
 		// TODO Auto-generated method stub
 		if (socket == null) return;
 		
-		int cantidad = 0;
+		boolean continuar = true;
 		
         try {
-        	while (cantidad < 300){
+        	while (continuar){
         		byte[] buf = new byte[256];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
-                System.out.println("recibido: "+(new String(packet.getData())));
-                cantidad ++;
+                String s = new String(packet.getData());
+                String[] arr = s.replaceAll("\n","").split(",");
+                if (arr.length == 5){
+                	int player = Integer.parseInt(arr[0]);
+                	double[] pos = new double[4];
+                	
+                	pos[0] = Double.parseDouble(arr[1]);
+                	pos[1] = Double.parseDouble(arr[2]);
+                	pos[2] = Double.parseDouble(arr[3]);
+                	pos[3] = Double.parseDouble(arr[4]);
+
+                	g.updatePos(player, pos);
+                }
+                //System.out.println("recibido: "+(new String(packet.getData())));
         	}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -1,7 +1,9 @@
+package Connection;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import PongV2.Game;
  
 public class MulticastClient implements Runnable {
 	
@@ -9,10 +11,12 @@ public class MulticastClient implements Runnable {
 	int port = 0;
 	MulticastSocket socket;
 	InetAddress group;
+	Game g;
 	
-	public MulticastClient(String host, int port){
+	public MulticastClient(String host, int port, Game g){
 		this.host = host;
 		this.port = port;
+		this.g = g;
 		try {
 			socket = new MulticastSocket(port);
 			group = InetAddress.getByName(host);
@@ -32,13 +36,27 @@ public class MulticastClient implements Runnable {
 			DatagramPacket packet;
 			byte[] buf;
 			
-			int contador = 0;
-			while (contador < 500){
+			boolean continuar = true;
+			while (continuar){
 				buf = new byte[256];
 				packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
 				String received = new String(packet.getData());
-				System.out.println("Recibido: "+received);
+				String[] data = received.replaceAll("\n", "").split(",");
+				for (int i = 0; i < data.length; i+=5){
+					double[] pos = new double[4];
+					pos[0] = Double.parseDouble(data[i+1]);
+					pos[1] = Double.parseDouble(data[i+2]);
+					pos[2] = Double.parseDouble(data[i+3]);
+					pos[3] = Double.parseDouble(data[i+4]);
+					if (data[i].equals("b")){//es la pelota
+						g.updatePos(-1, pos);					
+					}else{
+						int player = Integer.parseInt(data[i]);
+						if (g.getCurrentPlayer()!= player)
+							g.updatePos(player, pos);
+					}
+				}
 			}
 			
 			socket.leaveGroup(group);

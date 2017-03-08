@@ -188,13 +188,13 @@ public class HumanPaddle implements Paddle, Runnable, KeyListener {
 			setUpAccel(true);
 		}else if (player == 3 && e.getKeyCode() == KeyEvent.VK_RIGHT){
 			setDownAccel(true);
-		}else if(player == 2 && e.getKeyCode() == KeyEvent.VK_W){
+		}else if(player == 2 && e.getKeyCode() == KeyEvent.VK_UP){
 			setUpAccel(true);
-		}else if (player == 2 && e.getKeyCode() == KeyEvent.VK_S){
+		}else if (player == 2 && e.getKeyCode() == KeyEvent.VK_DOWN){
 			setDownAccel(true);
-		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_A){
+		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_LEFT){
 			setUpAccel(true);
-		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_D){
+		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_RIGHT){
 			setDownAccel(true);
 		}
 	}
@@ -209,13 +209,13 @@ public class HumanPaddle implements Paddle, Runnable, KeyListener {
 			setUpAccel(false);
 		}else if (player == 3 && e.getKeyCode() == KeyEvent.VK_RIGHT){
 			setDownAccel(false);
-		}else if(player == 2 && e.getKeyCode() == KeyEvent.VK_W){
+		}else if(player == 2 && e.getKeyCode() == KeyEvent.VK_UP){
 			setUpAccel(false);
-		}else if (player == 2 && e.getKeyCode() == KeyEvent.VK_S){
+		}else if (player == 2 && e.getKeyCode() == KeyEvent.VK_DOWN){
 			setDownAccel(false);
-		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_A){
+		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_LEFT){
 			setUpAccel(false);
-		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_D){
+		}else if (player == 4 && e.getKeyCode() == KeyEvent.VK_RIGHT){
 			setDownAccel(false);
 		}
 	}

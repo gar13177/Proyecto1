@@ -1,3 +1,4 @@
+package Connection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,6 +12,7 @@ public class client1 implements Runnable {
 	
 	String broadcast = "";
 	int portB = 0;
+	int player;
 	
 	public client1(String ip, int port, String name){
 		this.ip = ip;
@@ -20,6 +22,10 @@ public class client1 implements Runnable {
 	
 	public String getBroadcast(){
 		return broadcast;
+	}
+	
+	public int getPlayer(){
+		return player;
 	}
 	
 	public int getPortB(){
@@ -54,6 +60,7 @@ public class client1 implements Runnable {
 			String[] vals = s.replaceAll("\n", "").split(",");
 			broadcast = vals[0];
 			portB = Integer.parseInt(vals[1]);//teorico ya tengo todo
+			player = Integer.parseInt(vals[2]);//obtengo el jugador
 			MyClient.close();
 			
 		} catch (IOException e){

@@ -6,6 +6,7 @@ import java.awt.Graphics;
 public class Ball implements Runnable {
 	double xVel, yVel, x, y;
 	Game game;
+	long time; 
 	
 	public Ball(Game game){
 		this.game = game;
@@ -13,6 +14,24 @@ public class Ball implements Runnable {
 		y = Tennis.HEIGHT/2;
 		xVel =  getRandomSpeed() * getRandomDirection();
 		yVel = getRandomSpeed() * getRandomDirection();
+		time = System.currentTimeMillis();
+	}
+	
+	public void reset(){
+		x = Tennis.WIDTH/2;
+		y = Tennis.HEIGHT/2;
+		xVel =  getRandomSpeed() * getRandomDirection();
+		yVel = getRandomSpeed() * getRandomDirection();
+		double[] temp = new double[4];
+		temp[0] = x -10;
+		temp[1] = y - 10;
+		temp[2] = 20;
+		temp[3] = 20;
+		game.updatePos(-1,temp);
+	}
+	
+	public void setTime(long time){//se le manda la hora a la que se puede "despertar"
+		this.time = time;
 	}
 	
 	public double getRandomSpeed(){
@@ -29,35 +48,38 @@ public class Ball implements Runnable {
 		for (int i = 0; i < game.getNumPlayers(); i++){
 			double[] p1 = game.getPos(i+1);
 			if (p1 != null){
-				if (i == 0){
-					if (x <= p1[0]+p1[2] && x >= p1[0] + p1[2]*0.6)
-						if (y >= p1[1] && y <= p1[1]+p1[3]){
-							x = p1[0]+p1[2];
-							xVel = - xVel;
-							yVel = getRandomSpeed()*getRandomDirection();
-						}
-				}else if (i == 1){
-					if (x >= p1[0] && x <= p1[0] + p1[2]*0.3)
-						if (y >= p1[1] && y <= p1[1]+p1[3]){
-							x = p1[0];
-							xVel = - xVel;
-							yVel = getRandomSpeed()*getRandomDirection();
-						}
-				}else if (i == 2){
-					if (y <= p1[1] + p1[3] && y >= p1[1]+p1[3]*0.6)
-						if (x >= p1[0] && x <= p1[0] + p1[2]){
-							y = p1[1] + p1[3];
-							yVel = - yVel;
-							xVel = getRandomSpeed()*getRandomDirection();
-						}
-				}else{
-					if (y >= p1[1] && y <= p1[1]+p1[3]*0.3)
-						if (x >= p1[0] && x <= p1[0] + p1[2]){
-							y = p1[1];
-							yVel = - yVel;
-							xVel = getRandomSpeed()*getRandomDirection();
-						}
+				if (p1.length >= 4){
+					if (i == 0){
+						if (x <= p1[0]+p1[2] && x >= p1[0] + p1[2]*0.6)
+							if (y >= p1[1] && y <= p1[1]+p1[3]){
+								x = p1[0]+p1[2];
+								xVel = - xVel;
+								yVel = getRandomSpeed()*getRandomDirection();
+							}
+					}else if (i == 1){
+						if (x >= p1[0] && x <= p1[0] + p1[2]*0.3)
+							if (y >= p1[1] && y <= p1[1]+p1[3]){
+								x = p1[0];
+								xVel = - xVel;
+								yVel = getRandomSpeed()*getRandomDirection();
+							}
+					}else if (i == 2){
+						if (y <= p1[1] + p1[3] && y >= p1[1]+p1[3]*0.6)
+							if (x >= p1[0] && x <= p1[0] + p1[2]){
+								y = p1[1] + p1[3];
+								yVel = - yVel;
+								xVel = getRandomSpeed()*getRandomDirection();
+							}
+					}else{
+						if (y >= p1[1] && y <= p1[1]+p1[3]*0.3)
+							if (x >= p1[0] && x <= p1[0] + p1[2]){
+								y = p1[1];
+								yVel = - yVel;
+								xVel = getRandomSpeed()*getRandomDirection();
+							}
+					}
 				}
+				
 			}
 		}
 	}
@@ -93,10 +115,21 @@ public class Ball implements Runnable {
 
 	@Override
 	public void run() {
+		long reference;
 		while (true){
+			
+			if ((reference = System.currentTimeMillis()) < time){
+				reset();//voy a suponer que se duerme solo cuando quiere reiniciar
+				try {
+					Thread.sleep(time-reference);//lo duermo durante este tiempo
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			move();	
 			try {
-				Thread.sleep(10);
+				Thread.sleep(8);
 			} catch (InterruptedException e) {
 				
 				e.printStackTrace();
