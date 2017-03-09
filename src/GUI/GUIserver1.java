@@ -69,11 +69,14 @@ public class GUIserver1 extends JDialog {
 		    		time_label.setText("Quedan: "+(int)(current+time-System.currentTimeMillis())/1000);
 		    	else{
 		    		time_label.setText("Quedan: 0");
+		    		dispose();
 		    	}
 		    		
 		    }
 		});
 		SimpleTimer.start();
+		
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		this.pack();
 		

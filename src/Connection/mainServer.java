@@ -20,6 +20,7 @@ public class mainServer {
 		//int port = 4446;
 		GUIserver1 gu = new GUIserver1(null);
 		//gu.runThread();
+		gu.dispose();
 		Object o = gu.showDialog();
 		
 		int mainPort = (int)((Object[])o)[2];
