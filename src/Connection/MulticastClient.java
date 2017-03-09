@@ -48,11 +48,12 @@ public class MulticastClient implements Runnable {
 					pos[2] = Double.parseDouble(data[i+3]);
 					pos[3] = Double.parseDouble(data[i+4]);
 					if (data[i].equals("b")){//es la pelota
-						g.updatePos(-1, pos);					
+						g.updatePosServ(-1, pos);					
+					}else if (data[i].equals("w")){
+						g.setWinner((int)pos[0]);
 					}else{
 						int player = Integer.parseInt(data[i]);
-						if (g.getCurrentPlayer()!= player)
-							g.updatePos(player, pos);
+						g.updatePosServ(player, pos);
 					}
 				}
 			} catch (IOException e){

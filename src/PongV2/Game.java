@@ -8,7 +8,7 @@ public class Game {
 	boolean active = true;
 	int[] hits;
 	int lives = 4;
-	boolean winner = false, looser = false;//variables para saber si ha perdido o ganado
+	int winner -1;//variables para saber si ha perdido o ganado
 	
 	public Game(){
 		ball = new double[]{0,0,0,0};
@@ -30,7 +30,9 @@ public class Game {
 	}
 	
 	public synchronized void setCurrentPlayer(int currentPlayer){
+		if (currentPlayer != 1) hits[0] = 0;
 		this.currentPlayer = currentPlayer;
+		hits[currentPlayer-1] = 0;
 	}
 	
 	public synchronized int getCurrentPlayer(){
@@ -58,8 +60,12 @@ public class Game {
 		else if (p < paddle.length+1){
 			if (hits[p-1] < lives && hits[p-1]!=-1){
 				//si aun esta vivo, updateeo su posicion
+				
 				paddle[p-1] = pos;
-				if (pos[0]+pos[1]+pos[2]+pos[3] == 0) hits[p-1] = lives;
+				if (pos[0]+pos[1]+pos[2]+pos[3] == 0){
+					hits[p-1] = lives;
+					return;
+				}
 				//si me mandan 0,0,0,0 ya perdio
 			}
 			else//le asigno el 0,0,0,0
@@ -67,13 +73,34 @@ public class Game {
 		}
 	}
 	
+	public synchronized void updatePosServ(int p, double[] pos){
+		if (p != currentPlayer) {
+			updatePos(p,pos);
+			return;
+		}
+		if (hits[p-1] < lives && hits[p-1]!=-1){
+			//si aun esta vivo, updateeo su posicion
+			if (pos[0]+pos[1]+pos[2]+pos[3] == 0){
+				hits[p-1] = lives;
+				paddle[p-1] = new double[]{0,0,0,0};
+				return;
+			}
+			//si me mandan 0,0,0,0 ya perdio
+		}
+		else//le asigno el 0,0,0,0
+			paddle[p-1] = new double[]{0,0,0,0};
+		
+	}
+	
 	public synchronized boolean isPlaying(int p){
 		
+		//System.out.println("estoy pidiendo: "+p);
 		if (p < hits.length+1){
 			if (hits[p-1] == -1){
+				//System.out.println("no existe");
 				return false;
 			}
-			
+			//System.out.println("evaluando: "+(hits[p-1] < lives));
 			return hits[p-1] < lives;
 		}
 		return false;
@@ -85,7 +112,29 @@ public class Game {
 		return currentPlayer+","+paddle[currentPlayer-1][0]+","+paddle[currentPlayer-1][1]+","+paddle[currentPlayer-1][2]+","+paddle[currentPlayer-1][3];			
 	}
 	
+	public synchronized int getWinner(){
+		int winner = -1;
+		for (int i = 0; i < hits.length; i++ ){
+			if (hits[i] != -1 && hits[i] < lives){//si es distinto de -1 y ya paso el limite
+				if (winner != -1) return -1;//si alguien mas ya lo cambio, no hay ganador todavia
+				winner = i+1;
+			}
+		}
+		this.winner = winner; 
+		return winner;
+	}
+	public synchronized boolean isWinner(){
+		return currentPlayer == winner;
+	}
+	
+	public synchronized void setWinner(int player){
+		winner = player;
+	}
+	
 	public synchronized String getEverything(){
+		int winner = getWinner();
+		if (winner != -1) return String.format("w,%d,0,0,0",winner);
+		
 		String s = "";
 		s += String.format("b,%d,%d,%d,%d,", (int) ball[0],(int) ball[1], (int) ball[2], (int) ball[3]);
 		for (int i = 0; i < paddle.length; i++){
@@ -98,6 +147,7 @@ public class Game {
 				}
 			}
 		}
+		
 		return s.substring(0, s.length()-1);
 	}
 	
