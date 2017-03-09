@@ -111,9 +111,16 @@ public class GUIclient1 extends JDialog implements ActionListener{
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
+			
 			//broadcast = c1.getBroadcast();
 			//port = c1.getPortB();
 			player = c1.getPlayer();
+			
+			if (player == 0){
+				JOptionPane.showMessageDialog(this, "No se conectar con el host");
+				return;
+			}
+			
 			this.dispose();
 		}
 	}

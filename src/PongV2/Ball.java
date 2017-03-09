@@ -49,6 +49,7 @@ public class Ball implements Runnable {
 			double[] p1 = game.getPos(i+1);
 			if (p1 != null){
 				if (p1.length >= 4){
+					if (!game.isPlaying(i+1)) return;
 					if (i == 0){
 						if (x <= p1[0]+p1[2] && x >= p1[0] + p1[2]*0.6)
 							if (y >= p1[1] && y <= p1[1]+p1[3]){
@@ -82,6 +83,35 @@ public class Ball implements Runnable {
 				
 			}
 		}
+	}
+	
+	public void checkLimits(){
+		
+		if(x < -10 || x > Tennis.WIDTH+10 || y < -10 || y > Tennis.HEIGHT+10){
+			this.setTime(System.currentTimeMillis()+5000);//se espera para el reseteo
+			if (game.getPos(1) != null){
+				if (x < -10){
+					game.setHit(1);
+				}
+			}
+			if (game.getPos(2) != null){
+				if (x > Tennis.WIDTH+10){
+					game.setHit(2);
+				}
+			}
+			if (game.getPos(3) != null){
+				if (y < -10){
+					game.setHit(3);
+				}
+			}
+			
+			if (game.getPos(4) != null){
+				if (y > Tennis.HEIGHT+10){
+					game.setHit(4);
+				}
+			}			
+		}
+		
 	}
 	
 	public void move(){

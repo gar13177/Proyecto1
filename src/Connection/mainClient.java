@@ -26,6 +26,7 @@ public class mainClient {
 		int my_port = (int) a[2];//mi puerto libre
 		int player = (int) a[3];//mi numero de jugador
 		if (mainPort == 0) return;
+		if (player == 0) return;
 		
 		
 		Game g = new Game();
