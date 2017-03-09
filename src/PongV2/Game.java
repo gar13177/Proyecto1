@@ -13,7 +13,7 @@ public class Game {
 	public Game(){
 		ball = new double[]{0,0,0,0};
 		paddle = new double[4][];
-		hits = new int[]{0,0,0,0};//todos tienen 0 hits
+		hits = new int[]{-1,-1,-1,-1};//todos tienen 0 hits
 	}
 	
 	
@@ -22,6 +22,7 @@ public class Game {
 		for (int i = 0; i < paddle.length; i++){
 			if (paddle[i] == null){
 				paddle[i] = new double[]{};
+				hits[i] = 0;
 				return i+1;
 			}
 		}
@@ -47,13 +48,15 @@ public class Game {
 	}
 	
 	public synchronized void setHit(int p){
-		if (p < hits.length+1) hits[p-1]++;
+		if (p < hits.length+1) {
+			hits[p-1] = hits[p-1]+1;
+		}
 	}
 	
 	public synchronized void updatePos(int p, double[] pos){
 		if (p == -1) ball = pos;
 		else if (p < paddle.length+1){
-			if (hits[p-1] < lives){
+			if (hits[p-1] < lives && hits[p-1]!=-1){
 				//si aun esta vivo, updateeo su posicion
 				paddle[p-1] = pos;
 				if (pos[0]+pos[1]+pos[2]+pos[3] == 0) hits[p-1] = lives;
@@ -65,7 +68,14 @@ public class Game {
 	}
 	
 	public synchronized boolean isPlaying(int p){
-		if (p < hits.length+1) return hits[p-1] < lives;
+		
+		if (p < hits.length+1){
+			if (hits[p-1] == -1){
+				return false;
+			}
+			
+			return hits[p-1] < lives;
+		}
 		return false;
 	}
 	

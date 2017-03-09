@@ -35,7 +35,7 @@ public class Ball implements Runnable {
 	}
 	
 	public double getRandomSpeed(){
-		return (Math.random()*3+2);
+		return (Math.random()*3+1);
 	}
 	
 	public int getRandomDirection(){
@@ -88,28 +88,41 @@ public class Ball implements Runnable {
 	public void checkLimits(){
 		
 		if(x < -10 || x > Tennis.WIDTH+10 || y < -10 || y > Tennis.HEIGHT+10){
-			this.setTime(System.currentTimeMillis()+5000);//se espera para el reseteo
-			if (game.getPos(1) != null){
+			
+			if (game.isPlaying(1)){
 				if (x < -10){
 					game.setHit(1);
+					this.setTime(System.currentTimeMillis()+5000);//se espera para el reseteo
 				}
+				
+			}else if (x < -10){	
+				xVel = -xVel;
 			}
-			if (game.getPos(2) != null){
+			if (game.isPlaying(2)){
 				if (x > Tennis.WIDTH+10){
 					game.setHit(2);
+					this.setTime(System.currentTimeMillis()+5000);//se espera para el reseteo
 				}
+			}else if (x > Tennis.WIDTH+10){
+				xVel = -xVel;
 			}
-			if (game.getPos(3) != null){
+			if (game.isPlaying(3)){
 				if (y < -10){
 					game.setHit(3);
+					this.setTime(System.currentTimeMillis()+5000);//se espera para el reseteo
 				}
+			}else if (y < -10){
+				 yVel = -yVel;
 			}
 			
-			if (game.getPos(4) != null){
+			if (game.isPlaying(4)){
 				if (y > Tennis.HEIGHT+10){
 					game.setHit(4);
+					this.setTime(System.currentTimeMillis()+5000);//se espera para el reseteo
 				}
-			}			
+			}else if (y > Tennis.HEIGHT+10){
+				yVel = -yVel;
+			}
 		}
 		
 	}
@@ -117,9 +130,10 @@ public class Ball implements Runnable {
 	public void move(){
 		x += xVel;
 		y += yVel;
-		if (y < 0 || y > Tennis.HEIGHT) yVel = -yVel;//rebote
-		if (x < 0 || x > Tennis.WIDTH) xVel = -xVel;//rebote
+		//if (y < 0 || y > Tennis.HEIGHT) yVel = -yVel;//rebote
+		//if (x < 0 || x > Tennis.WIDTH) xVel = -xVel;//rebote
 		checkPaddleCollision();
+		checkLimits();
 		double[] temp = new double[4];
 		temp[0] = x -10;
 		temp[1] = y - 10;
