@@ -3,6 +3,7 @@ import javax.swing.JFrame;
 
 import PongV2.Game;
 import PongV2.Tennis;
+import GUI.GUIclient1;
 
 public class mainClient {
 	String host;
@@ -10,29 +11,27 @@ public class mainClient {
 	
 	public mainClient(){
 		
-		String host = "192.168.56.1";
-		int mainPort = 4093;
-
-		client1 c1 = new client1(host,mainPort,"kevin" );
+		GUIclient1 c = new GUIclient1(null);
+		Object[] a = (Object[])c.showDialog();
+		//recibo ip del servidor y puerto para mandar mis mensajes
+		//recibo mi nuevo puerto libre y mi numero de jugador
 		
-		Thread t1 = new Thread(c1);
-		t1.start();
-		try {
-			t1.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String broadcast = c1.getBroadcast();
-		int port = c1.getPortB();
-		int player = c1.getPlayer();
-		System.out.println("broadcast: "+broadcast);
-		System.out.println("port: "+port);
+		System.out.println("host: "+(String)a[0]);
+		System.out.println("port: "+(int)a[1]);
+		
+		
+		
+		String host = (String) a[0];//host del servidor
+		int mainPort =(int) a[1];//puerto del servidor
+		int my_port = (int) a[2];//mi puerto libre
+		int player = (int) a[3];//mi numero de jugador
+		if (mainPort == 0) return;
+		
 		
 		Game g = new Game();
 		g.setCurrentPlayer(player);
 		
-		MulticastClient c2 = new MulticastClient(broadcast, port, g);
+		MulticastClient c2 = new MulticastClient(my_port, g);
 		Thread t2 = new Thread(c2);
 		t2.start();//broadcast recibiendo la data del juego
 		
@@ -53,5 +52,6 @@ public class mainClient {
 		frame.pack();
 		frame.setVisible(true);
 		frame.setResizable(false);
+		
 	}
 }

@@ -5,10 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import PongV2.Game;
 
 /*
- * En esta clase levanto una conexión tcp con mi ip y puerto
+ * En esta clase levanto una conexion tcp con mi ip y puerto
  * para que sea reciclada posteriormente
  *  */
 
@@ -18,16 +22,20 @@ public class server1 implements Runnable {
 	int port = 0;
 	Game g;
 	long time;
+	Set<Object> synset;
 	
 	public server1(Game g){
 		this.g = g;
 		this.time = 20000;
 		try {
 			MyService = new ServerSocket(0);//le digo que busque cualquier puerto disponible
-			MyService.setSoTimeout((int)this.time);
+			MyService.setSoTimeout(1000);
 		} catch (IOException e){
 			System.out.println(e);
 		}
+		Set<Object> set = new HashSet<Object>();
+		synset = Collections.synchronizedSet(set);
+		
 	}
 	
 	public void setTimeOut(long time){
@@ -55,6 +63,10 @@ public class server1 implements Runnable {
 		return "";
 	}
 	
+	public Set<Object> getSet(){
+		return synset;
+	}
+	
 	public void setBroadcast(String broadcast){
 		this.broadcast = broadcast;
 	}
@@ -73,14 +85,15 @@ public class server1 implements Runnable {
 		while (recieve){
 			//Socket clientSocket = null;
 			try{
+				Socket clientSocket = MyService.accept();
+				System.out.println("cliente recibido "+clientSocket);
 				int newPlayer = g.newPlayer();
 				if (newPlayer != -1){
-					Socket clientSocket = MyService.accept();
-					System.out.println("cliente recibido "+clientSocket);
-					new Thread(new sendBroadcastInfo(clientSocket, broadcast, port,newPlayer)).start();
+					new Thread(new sendBroadcastInfo(clientSocket, synset, newPlayer)).start();
 					cantidad++;
 				}else {
 					recieve = false;
+					System.out.println("newPlayer -1");
 				}
 				
 				

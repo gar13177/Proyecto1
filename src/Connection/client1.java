@@ -13,11 +13,13 @@ public class client1 implements Runnable {
 	String broadcast = "";
 	int portB = 0;
 	int player;
+	int myPort;
 	
-	public client1(String ip, int port, String name){
+	public client1(String ip, int port, int myPort, String name){
 		this.ip = ip;
 		this.port = port;
 		this.name = name;
+		this.myPort = myPort;
 	}
 	
 	public String getBroadcast(){
@@ -42,14 +44,10 @@ public class client1 implements Runnable {
 			MyClient = new Socket(ip, port);
 			output = new DataOutputStream(MyClient.getOutputStream());
 			input = new DataInputStream(MyClient.getInputStream());
-			byte[] msgArray = (name+" requests game\n").getBytes();
-			System.out.println("mandando mensaje");
-			output.writeInt(msgArray.length);
+			byte[] msgArray = (""+myPort).getBytes();
+			output.writeInt(msgArray.length);//le envio al servidor el puerto disponible para escuchar
 			output.write(msgArray);
-			//output.flush();
-			System.out.println("mensaje mandado");
-			
-			
+			//output.flush();			
 			
 			int length = input.readInt();
 			msgArray = new byte[length];
@@ -68,8 +66,4 @@ public class client1 implements Runnable {
 			//if (MyClient != null) MyClient.close();
 		}
 	}
-	
-	
-	
-	
 }

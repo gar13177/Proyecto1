@@ -3,17 +3,21 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Set;
 
+/*
+ * Clase que envia a un jugador la informacion sobre la nueva partida
+ * */
 public class sendBroadcastInfo implements Runnable {
 	
 	int SIZE = 10000;
 	String broadcast = "";
 	int port = 0, player = 0;
 	Socket client = null;
+	Set<Object> set;
 	
-	public sendBroadcastInfo(Socket client, String broadcast, int port, int player){
-		this.broadcast = broadcast;
-		this.port = port;
+	public sendBroadcastInfo(Socket client, Set<Object> set, int player){
+		this.set = set;
 		this.client = client;
 		this.player = player;
 	}
@@ -26,18 +30,17 @@ public class sendBroadcastInfo implements Runnable {
 		try{
 			input = new DataInputStream(client.getInputStream());
 			output = new DataOutputStream(client.getOutputStream());
-			System.out.println("esperando mensaje");
 			int length = input.readInt();
 			byte[] msgArray = new byte[length];
 			input.readFully(msgArray, 0, msgArray.length);
-			String s = new String(msgArray);
-			System.out.println(s);//se imprime requeste del jugador
+			String s = new String(msgArray).replaceAll("\n","");
+			int port = Integer.parseInt(s);//ya tengo el puerto
+			Object[] o = new Object[]{client.getInetAddress(),port};//creo un array de ip y puerto
+			set.add(o);		
 			
-			
-			msgArray = (broadcast+","+port+","+player).getBytes();
+			msgArray = ("0,0,"+player).getBytes();
 			output.writeInt(msgArray.length);
 			output.write(msgArray);
-			//output.flush();//envio de regreso el broadcast y el puerto
 			
 		} catch (IOException e){
 			System.out.println(e);

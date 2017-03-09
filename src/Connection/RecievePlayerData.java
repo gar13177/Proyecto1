@@ -2,9 +2,14 @@ package Connection;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import PongV2.Game;
 
+/*
+ * Clase que recibe la informacion que manda cada jugador y la actualiza en el juego
+ * aqui esta lo que debo quitar para mandar 
+ * */
 public class RecievePlayerData implements Runnable {
 	
 	int port;

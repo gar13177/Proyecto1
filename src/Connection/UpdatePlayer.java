@@ -3,20 +3,18 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import PongV2.Game;
 
 /*
- * Clase que envia al servidor la informacion actual del jugador
+ * Clase que envia a un jugador el estado actual del juego
  * */
-public class PlayerData implements Runnable {
-	String host;
+public class UpdatePlayer implements Runnable {
+	InetAddress address;
 	int port;
 	Game g;
 	
-	public PlayerData(String host, int port, Game g){
-		this.host = host;
+	public UpdatePlayer(InetAddress address, int port, Game g){
+		this.address = address;
 		this.port = port;
 		this.g = g;
 	}
@@ -29,16 +27,15 @@ public class PlayerData implements Runnable {
 		try {
 			socket = new DatagramSocket();
 			String s;
-	        InetAddress address = InetAddress.getByName(host);
 	        boolean continuar = true;
 	        while (continuar){
-	        	s = g.getPosString();
+	        	s = g.getEverything();
 	        	if (s != null){
 	        		byte[] buf = s.getBytes();
 	        		DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
 			        socket.send(packet);
 	        	}
-		        Thread.sleep(8);
+		        Thread.sleep(8);		        
 	        }	   
 	        socket.close();
 			

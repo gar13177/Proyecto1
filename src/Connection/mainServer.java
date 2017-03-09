@@ -1,8 +1,10 @@
 package Connection;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.swing.JFrame;
 
+import GUI.GUIserver1;
 import PongV2.Game;
 import PongV2.Tennis;
 
@@ -14,41 +16,20 @@ public class mainServer {
 	public mainServer(){
 		
 		//mainServer(broadcast, port)
-		String broadcast = "230.0.1.1";
-		int port = 4446;
+		//String broadcast = "230.0.1.1";
+		//int port = 4446;
+		GUIserver1 gu = new GUIserver1(null);
+		//gu.runThread();
+		Object o = gu.showDialog();
 		
-		Game g = new Game();
-		int player = g.newPlayer();
-		g.setCurrentPlayer(player);//pido uno nuevo y se lo coloco
-
-		server1 s1 = new server1(g);
-		int mainPort = s1.getPort();
-		System.out.println(s1.getPort());//ya tengo el puerto
-		System.out.println(s1.getIP());//ya tengo la ip
+		int mainPort = (int)((Object[])o)[2];
+		Game g = (Game)((Object[])o)[0];
+		Set<Object> set = (Set<Object>)((Object[])o)[1];
+		if (set.isEmpty()) return;//no hay data
 		
+		MulticastServer s2 = new MulticastServer(set, g);//ya empiezo a hacer el broadcast
+		s2.start();
 		
-		
-		s1.setBroadcast(broadcast);
-		s1.setPortB(port);
-		
-		
-		//JPanel panel = new JPanel();
-		
-		
-		
-		
-		MulticastServer s2 = new MulticastServer(broadcast, port, g);
-		new Thread(s2).start();//levanto el broadcast
-		
-		Thread t1 = new Thread(s1);
-		t1.start();//corro el servidor para aceptar nuevas solicitudes		
-		
-		try {
-			t1.join();//espero a que se termine de cerrar ese servidor
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		System.out.println("t1 finalizado");
 		RecievePlayerData s3 = new RecievePlayerData(mainPort, g);
