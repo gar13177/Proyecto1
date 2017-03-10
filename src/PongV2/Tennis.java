@@ -3,6 +3,7 @@ package PongV2;
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -23,6 +24,7 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 	Game game;
 	int player = 1;
 	Thread t1 = null;//thread de la pelota
+	int times = 0;
 	
 	
 	public Tennis(){
@@ -85,15 +87,20 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 		gfx.setColor(Color.black);
 		gfx.fillRect(0,0, WIDTH,HEIGHT);
 		
-		if (!game.isPlaying(this.player)){
-			gfx.setColor(Color.red);
-			gfx.drawString("Game Over", 350,250);
-		}
+		
 		
 		if (game.isWinner()){
 			gfx.setColor(Color.white);
-			gfx.drawString("HA GANADO", 350,250);
-			
+			gfx.setFont(new Font("TimesRoman",Font.PLAIN, 40));
+			gfx.drawString("HA GANADO", 225,250);
+			if (times == 0) times++;
+			else return;		
+		}
+		
+		if (!game.isPlaying(this.player)){
+			gfx.setColor(Color.red);
+			gfx.setFont(new Font("TimesRoman",Font.PLAIN, 40));
+			gfx.drawString("Game Over", 225,250);
 		}
 			
 		gfx.setColor(Color.white);

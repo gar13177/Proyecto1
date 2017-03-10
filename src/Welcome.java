@@ -11,6 +11,8 @@ public class Welcome extends JFrame implements ActionListener {
 	
 	private JButton client;
 	private JButton server;
+	mainClient mc;
+	mainServer ms;
 	
 	public Welcome(){
 		super();
@@ -32,9 +34,9 @@ public class Welcome extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getActionCommand().equals("Client")){
-			new mainClient();
+			mc = new mainClient();
 		}else if (e.getActionCommand().equals("Server")){
-			new mainServer();
+			ms = new mainServer();
 		}
 	}
 

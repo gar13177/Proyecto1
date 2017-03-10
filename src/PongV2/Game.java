@@ -132,10 +132,10 @@ public class Game {
 	}
 	
 	public synchronized String getEverything(){
-		int winner = getWinner();
-		if (winner != -1) return String.format("w,%d,0,0,0",winner);
-		
 		String s = "";
+		int winner = getWinner();
+		if (winner != -1)  s = String.format("w,%d,0,0,0,",winner);
+		
 		s += String.format("b,%d,%d,%d,%d,", (int) ball[0],(int) ball[1], (int) ball[2], (int) ball[3]);
 		for (int i = 0; i < paddle.length; i++){
 			if (paddle[i] != null ){
