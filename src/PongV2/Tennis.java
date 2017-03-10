@@ -89,6 +89,11 @@ public class Tennis extends JPanel implements Runnable, KeyListener{
 			gfx.setColor(Color.red);
 			gfx.drawString("Game Over", 350,250);
 		}
+		
+		if (game.isWinner()){
+			gfx.setColor(Color.white);
+			gfx.drawString("HA GANADO", 350,250);
+		}
 			
 		gfx.setColor(Color.white);
 		double[] temp = game.getPos(-1);

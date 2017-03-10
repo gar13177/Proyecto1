@@ -8,7 +8,7 @@ public class Game {
 	boolean active = true;
 	int[] hits;
 	int lives = 4;
-	int winner -1;//variables para saber si ha perdido o ganado
+	int winner = -1;//variables para saber si ha perdido o ganado
 	
 	public Game(){
 		ball = new double[]{0,0,0,0};
